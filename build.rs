@@ -1,11 +1,8 @@
-use std::{
-    collections::HashSet,
-    path::PathBuf,
-    str::FromStr,
-    sync::{Arc, RwLock},
-};
+use std::{collections::HashSet, fs::File, path::PathBuf, str::FromStr, sync::{Arc, RwLock}};
 
 use bindgen::callbacks::{MacroParsingBehavior, ParseCallbacks};
+use flate2::read::GzDecoder;
+use tar::Archive;
 
 /*
 default source build memfs+static
@@ -60,7 +57,7 @@ fn main() {
     } else {
         let lib_result = pkg_config::Config::new()
             .atleast_version(MINIMUM_ECCODES_VERSION)
-            .probe("eccodes-dev");
+            .probe("eccodes");
 
         match lib_result {
             Ok(pk) => {
@@ -83,7 +80,7 @@ fn main() {
     let macros = Arc::new(RwLock::new(HashSet::new()));
 
     let tests = cfg!(feature="tests");
-
+    eprintln!("{:?}", include_path);
     let bindings = bindgen::Builder::default()
         .clang_arg(format!("-I{}", include_path.to_string_lossy()))
         .trust_clang_mangling(false)
@@ -101,13 +98,17 @@ fn main() {
 
     bindings
         .write_to_file("src/bindings.rs")
-        .expect("Failed to write bidnings to file");
+        .expect("Failed to write bindings to file");
 }
 
-fn get_include_from_source() -> PathBuf {
+fn get_include_from_source() -> PathBuf{
     eprintln!("Building ecCodes from source so using specified features");
 
-    let path = PathBuf::from_str("eccodes-src/include/eccodes.h").unwrap();
+    let path = "eccodes-src/eccodes-2.22.1-Source.tar.gz";
+    let tar_gz = File::open(path).expect("Failed to open ecCodes source archive");
+    let tar = GzDecoder::new(tar_gz);
+    let mut archive = Archive::new(tar);
+    archive.unpack("eccodes-src").expect("Failed to unpack ecCodes source archive");
 
-    path
+    PathBuf::from_str("foo.h").unwrap()
 }

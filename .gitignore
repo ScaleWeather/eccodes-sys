@@ -2,5 +2,5 @@
 Cargo.lock
 src/bindings.rs
 
-eccodes/*
-!eccodes/eccodes-*-Source.tar.gz
+eccodes-src/*
+!eccodes-src/eccodes-*-Source.tar.gz
