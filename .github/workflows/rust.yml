@@ -41,6 +41,21 @@ jobs:
       run: |
         cargo clean
         cargo build --workspace --features "build_source"
+    - name: Build with jpeg
+      run: |
+        sudo apt-get install libopenjp2-7-dev
+        cargo clean
+        cargo build --workspace --features "build_source jpeg"
+    - name: Build static with png
+      run: |
+        sudo apt-get install libpng-dev
+        cargo clean
+        cargo build --workspace --features "build_source png"
+    - name: Build static with netcdf
+      run: |
+        sudo apt-get install libnetcdff-dev libnetcdf-c++4-dev
+        cargo clean
+        cargo build --workspace --features "build_source netcdf"
     - name: Build default and test
       run: |
         cargo clean
