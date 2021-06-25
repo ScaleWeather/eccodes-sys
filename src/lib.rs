@@ -11,7 +11,7 @@
 //!
 //!## Usage
 //!
-//!By default this crate will look for existing `libeccodes` installation using [pkg-config](https://crates.io/crates/pkg-config). If the library is not found, the crate will build ecCodes from source provided with package.
+//!By default this crate will look for existing `libeccodes` installation using [pkg-config](https://crates.io/crates/pkg-config). If the library is not found, the crate will attempt to download the latest source code and build ecCodes from source.
 //!
 //!### Features
 //!
