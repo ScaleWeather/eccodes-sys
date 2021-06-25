@@ -1,3 +1,6 @@
 /target
 Cargo.lock
 src/bindings.rs
+
+eccodes/*
+!eccodes/eccodes-*-Source.tar.gz
