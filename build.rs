@@ -1,5 +1,6 @@
 use std::{
     collections::HashSet,
+    env,
     fs::File,
     path::PathBuf,
     sync::{Arc, RwLock},
@@ -68,15 +69,11 @@ fn main() {
     let macros = Arc::new(RwLock::new(HashSet::new()));
 
     let tests = cfg!(feature = "tests");
-    eprintln!("{:?}", include_path);
+
     let bindings = bindgen::Builder::default()
         .clang_arg(format!("-I{}", include_path.to_string_lossy()))
         .trust_clang_mangling(false)
         .header("wrapper.h")
-        .raw_line("#![allow(non_upper_case_globals)]")
-        .raw_line("#![allow(non_camel_case_types)]")
-        .raw_line("#![allow(non_snake_case)]")
-        .raw_line("#![allow(unused)]")
         .layout_tests(tests) //avoiding test with UB
         .parse_callbacks(Box::new(MacroCallback {
             macros: macros.clone(),
@@ -84,8 +81,9 @@ fn main() {
         .generate()
         .expect("Unable to generate bindings");
 
+    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     bindings
-        .write_to_file("src/bindings.rs")
+        .write_to_file(out_path.join("bindings.rs"))
         .expect("Failed to write bindings to file");
 }
 
