@@ -8,6 +8,8 @@ use std::{
 use bindgen::callbacks::{MacroParsingBehavior, ParseCallbacks};
 
 /*
+default source build memfs+static
+
 if cfg(build-source)
     build_source()
 else nothing
@@ -21,7 +23,7 @@ build_source() {
     else
         BUILD_SHARED_LIBS=OFF
 
-    if config(no-memfs)
+    if config(no_memfs)
         ENABLE_MEMFS=OFF
     else
         ENABLE_MEMFS=ON
