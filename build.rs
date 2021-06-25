@@ -2,6 +2,7 @@ use std::{
     collections::HashSet,
     env,
     fs::File,
+    io::copy,
     path::PathBuf,
     sync::{Arc, RwLock},
 };
@@ -9,6 +10,7 @@ use std::{
 use bindgen::callbacks::{MacroParsingBehavior, ParseCallbacks};
 use flate2::read::GzDecoder;
 use tar::Archive;
+use tokio;
 
 // build script heavily inspired by proj-sys crate
 // some parts of code from rust-bindgen
@@ -39,10 +41,11 @@ impl ParseCallbacks for MacroCallback {
     }
 }
 
-fn main() {
+#[tokio::main(flavor = "current_thread")]
+async fn main() {
     let include_path;
     if cfg!(feature = "build_source") {
-        include_path = get_include_from_source();
+        include_path = get_include_from_source().await;
     } else {
         let lib_result = pkg_config::Config::new()
             .atleast_version(MINIMUM_ECCODES_VERSION)
@@ -60,7 +63,7 @@ fn main() {
             }
             Err(err) => {
                 eprintln!("Cannot find existing ecCodes library {}", err);
-                include_path = get_include_from_source();
+                include_path = get_include_from_source().await;
             }
         }
     }
@@ -87,20 +90,35 @@ fn main() {
         .expect("Failed to write bindings to file");
 }
 
-fn get_include_from_source() -> PathBuf {
+async fn get_include_from_source() -> PathBuf {
     eprintln!("Building ecCodes from source so using specified features");
+    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let source_url =
+        "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz";
+    let source_tar = out_path.join("eccodes-2.22.1-Source.tar.gz");
+    let source_path = out_path.join("eccodes-2.22.1-Source");
+
+    //download the source code
+    let source_content = reqwest::get(source_url)
+        .await
+        .expect("Failed to download ecCodes source code")
+        .bytes()
+        .await
+        .expect("Failed to convert downloaded file");
+
+    let mut dest = File::create(&source_tar).expect("Failed to create file");
+    copy(&mut source_content.as_ref(), &mut dest).expect("Failed to save donwloaded tar");
 
     //unpack archive
-    let path = "eccodes-src/eccodes-2.22.1-Source.tar.gz";
-    let tar_gz = File::open(path).expect("Failed to open ecCodes source archive");
+    let tar_gz = File::open(&source_tar).expect("Failed to open ecCodes source archive");
     let tar = GzDecoder::new(tar_gz);
     let mut archive = Archive::new(tar);
     archive
-        .unpack("eccodes-src")
+        .unpack(out_path)
         .expect("Failed to unpack ecCodes source archive");
 
     //build source with cmake
-    let mut cmake_config = cmake::Config::new("eccodes-src/eccodes-2.22.1-Source");
+    let mut cmake_config = cmake::Config::new(source_path);
 
     //default configuration
     cmake_config.define("CMAKE_C_FLAGS", "-O3");
