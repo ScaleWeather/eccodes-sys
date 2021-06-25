@@ -10,6 +10,9 @@ categories = ["api-bindings", "external-ffi-bindings", "mathematics", "encoding"
 license = "Apache-2.0"
 edition = "2018"
 links = "eccodes"
+exclude = [
+    ".gtihub/*",
+]
 
 [features]
 tests = []
