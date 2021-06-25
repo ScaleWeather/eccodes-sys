@@ -8,6 +8,7 @@ authors = ["Jakub Lewandowski <scaleweather@gmail.com>"]
 keywords = ["eccodes", "grib", "bufr", "meteorology", "weather"]
 categories = ["api-bindings", "external-ffi-bindings", "mathematics", "encoding", "science"]
 license = "Apache-2.0"
+license-file = "LICENSE"
 edition = "2018"
 links = "eccodes"
 
