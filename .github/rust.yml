@@ -1,0 +1,49 @@
+name: cargo
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build with existing library
+      run: |
+        sudo apt-get update
+        sudo apt-get install clang
+        sudo apt-get install libclang1
+        sudo apt-get install libeccodes-dev
+        cargo clean
+        cargo build --workspace
+    - name: Build shared without memfs
+      run: |
+        sudo apt-get remove libeccodes-dev
+        cargo clean
+        cargo build --workspace --features "shared no_memfs"
+    - name: Build shared with memfs
+      run: |
+        cargo clean
+        cargo build --workspace --features "shared"
+    - name: Build static without memfs
+      run: |
+        cargo clean
+        cargo build --workspace --features "build_source no_memfs"
+    - name: Build static with memfs
+      run: |
+        cargo clean
+        cargo build --workspace --features "build_source"
+    - name: Build default and test
+      run: |
+        cargo clean
+        cargo build --workspace --features "tests"
+        cargo test
+        
