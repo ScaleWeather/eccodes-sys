@@ -1,4 +1,11 @@
-use std::{path::PathBuf, str::FromStr};
+use std::{
+    collections::HashSet,
+    path::PathBuf,
+    str::FromStr,
+    sync::{Arc, RwLock},
+};
+
+use bindgen::callbacks::{MacroParsingBehavior, ParseCallbacks};
 
 /*
 if cfg(build-source)
@@ -22,8 +29,27 @@ build_source() {
  */
 
 // build script heavily inspired by proj-sys crate
+// some parts of code from rust-bindgen
 
 const MINIMUM_ECCODES_VERSION: &str = "2.20.0"; // currently the latest in apt-get
+const PROBLEMATIC_MACROS: [&str; 5] = ["FP_NAN", "FP_INFINITE", "FP_ZERO", "FP_SUBNORMAL", "FP_NORMAL"];
+
+#[derive(Debug)]
+struct MacroCallback {
+    macros: Arc<RwLock<HashSet<String>>>,
+}
+
+impl ParseCallbacks for MacroCallback {
+    fn will_parse_macro(&self, name: &str) -> MacroParsingBehavior {
+        self.macros.write().unwrap().insert(name.into());
+
+        if PROBLEMATIC_MACROS.contains(&name) {
+            return MacroParsingBehavior::Ignore;
+        }
+
+        MacroParsingBehavior::Default
+    }
+}
 
 fn main() {
     let include_path;
@@ -51,18 +77,27 @@ fn main() {
         }
     }
 
-    let bindings = bindgen::Builder::default()
-    .clang_arg(format!("-I{}", include_path.to_string_lossy()))
-    .trust_clang_mangling(false)
-    .header("wrapper.h")
-    .raw_line("#![allow(non_upper_case_globals)]")
-    .raw_line("#![allow(non_camel_case_types)]")
-    .raw_line("#![allow(non_snake_case)]")
-    .raw_line("#![allow(unused)]")
-    .generate()
-    .expect("Unable to generate bindings");
+    //bindgen magic to avoid duplicate math.h type definitions
+    let macros = Arc::new(RwLock::new(HashSet::new()));
 
-    bindings.write_to_file("src/bindings.rs").expect("Failed to write bidnings to file");
+    let bindings = bindgen::Builder::default()
+        .clang_arg(format!("-I{}", include_path.to_string_lossy()))
+        .trust_clang_mangling(false)
+        .header("wrapper.h")
+        .raw_line("#![allow(non_upper_case_globals)]")
+        .raw_line("#![allow(non_camel_case_types)]")
+        .raw_line("#![allow(non_snake_case)]")
+        .raw_line("#![allow(unused)]")
+        .layout_tests(false) //avoiding test with UB
+        .parse_callbacks(Box::new(MacroCallback {
+            macros: macros.clone(),
+        }))
+        .generate()
+        .expect("Unable to generate bindings");
+
+    bindings
+        .write_to_file("src/bindings.rs")
+        .expect("Failed to write bidnings to file");
 }
 
 fn get_include_from_source() -> PathBuf {
