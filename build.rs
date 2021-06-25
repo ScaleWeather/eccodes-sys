@@ -80,6 +80,8 @@ fn main() {
     //bindgen magic to avoid duplicate math.h type definitions
     let macros = Arc::new(RwLock::new(HashSet::new()));
 
+    let tests = cfg!(feature="tests");
+
     let bindings = bindgen::Builder::default()
         .clang_arg(format!("-I{}", include_path.to_string_lossy()))
         .trust_clang_mangling(false)
@@ -88,7 +90,7 @@ fn main() {
         .raw_line("#![allow(non_camel_case_types)]")
         .raw_line("#![allow(non_snake_case)]")
         .raw_line("#![allow(unused)]")
-        .layout_tests(false) //avoiding test with UB
+        .layout_tests(tests) //avoiding test with UB
         .parse_callbacks(Box::new(MacroCallback {
             macros: macros.clone(),
         }))
