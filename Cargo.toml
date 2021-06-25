@@ -9,6 +9,10 @@ nobuild = []
 build_source = []
 shared = ["build_source"]
 no_memfs = ["build_source"]
+jpeg = ["build_source"]
+png = ["build_source"]
+posix = ["build_source"]
+netcdf = ["build_source"]
 
 [build-dependencies]
 bindgen = "0.58.1"
