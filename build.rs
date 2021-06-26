@@ -43,6 +43,10 @@ impl ParseCallbacks for MacroCallback {
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
+    if cfg!(feature="docs") {
+        return;
+    }
+
     let include_path;
     if cfg!(feature = "build_source") {
         include_path = get_include_from_source().await;
@@ -92,6 +96,8 @@ async fn main() {
 
 async fn get_include_from_source() -> PathBuf {
     eprintln!("Building ecCodes from source so using specified features");
+
+    //path constants
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     let source_url =
         "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz";
@@ -106,6 +112,7 @@ async fn get_include_from_source() -> PathBuf {
         .await
         .expect("Failed to convert downloaded file");
 
+    //save the source code
     let mut dest = File::create(&source_tar).expect("Failed to create file");
     copy(&mut source_content.as_ref(), &mut dest).expect("Failed to save donwloaded tar");
 

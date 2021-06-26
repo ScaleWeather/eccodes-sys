@@ -9,7 +9,7 @@
 
 ## Usage
 
-By default this crate will look for existing `libeccodes` installation using [pkg-config](https://crates.io/crates/pkg-config). If the library is not found, the crate will attempt to download the latest source code and build ecCodes from source.
+By default this crate will look for existing `libeccodes` installation using [pkg-config](https://crates.io/crates/pkg-config). If the library is not found, the crate will attempt to download the latest source code and build ecCodes from source. The ecCodes library is then linked and bindings are generated using [bindgen](https://crates.io/crates/bindgen).
 
 To install ecCodes globally to use with this crate `apt-get` can be used:
 
@@ -27,14 +27,19 @@ The `eccodes-sys` crate allows to choose several features. For a detailed explan
 
 All following features activate building from source:
 
-- `jpeg` - builds ecCodes with JPEG2000 support enabled (`ENABLE_JPG=ON`). Requires `libopenjp2-7-dev` to be installed.
-- `png` - builds ecCodes with PNG support enabled (`ENABLE_PNG=ON`). Requires `libpng-dev` to be installed.
-- `netcdf` - builds ecCodes with NETCDF support enabled (`ENABLE_NETCDF=ON`). Requires `libnetcdff-dev` and `libnetcdf-c++4-dev` to be installed.
+- `jpeg` - builds ecCodes with JPEG2000 support enabled (`ENABLE_JPG=ON`), requires `libopenjp2-7-dev`
+- `png` - builds ecCodes with PNG support enabled (`ENABLE_PNG=ON`), requires `libpng-dev`
+- `netcdf` - builds ecCodes with NETCDF support enabled (`ENABLE_NETCDF=ON`), requires `libnetcdff-dev` and `libnetcdf-c++4-dev`
 
-There are also two advanced features which should be used only when you know that compilation files will not be removed:
+These are advanced features which should be used only when you know that compilation files will not be removed:
 
 - `shared` - builds ecCodes as shared library (`BUILD_SHARED_LIBS=ON`)
 - `no_memfs` - builds ecCodes with MEMFS deactivated (`ENABLE_MEMFS=OFF`)
+
+There are also development features available:
+
+- `docs` - for documentation building, does not build or link ecCodes and includes `bindings-docs.rs` into `lib.rs`
+- `tests` - turns on generation of layout tests by `bindgen`, should not be used in production. Layout tests are off by default as they derefrence null pointers causing undefined behaviour
 
 ## License
 
