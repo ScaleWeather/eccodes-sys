@@ -16,49 +16,51 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build with existing library
+    - name: Prepare environment
       run: |
         sudo apt-get update
         sudo apt-get install clang
         sudo apt-get install libclang1
-        sudo apt-get install libeccodes-dev
         cargo clean
-        cargo build --workspace
+    - name: Build with existing library
+      run: |
+        sudo apt-get install libeccodes-dev
+        cargo build
+        cargo clean
+        sudo apt-get remove libeccodes-dev
+        sudo apt-get autoremove
     - name: Build shared without memfs
       run: |
-        sudo apt-get remove libeccodes-dev
+        cargo build --features "shared no_memfs"
         cargo clean
-        cargo build --workspace --features "shared no_memfs"
     - name: Build shared with memfs
       run: |
+        cargo build --features "shared"
         cargo clean
-        cargo build --workspace --features "shared"
     - name: Build static without memfs
       run: |
+        cargo build --features "build_source no_memfs"
         cargo clean
-        cargo build --workspace --features "build_source no_memfs"
     - name: Build static with memfs
       run: |
+        cargo build --features "build_source"
         cargo clean
-        cargo build --workspace --features "build_source"
     - name: Build with jpeg
       run: |
         sudo apt-get install libopenjp2-7-dev
+        cargo build --features "build_source jpeg"
         cargo clean
-        cargo build --workspace --features "build_source jpeg"
     - name: Build static with png
       run: |
         sudo apt-get install libpng-dev
+        cargo build  --features "build_source png"
         cargo clean
-        cargo build --workspace --features "build_source png"
     - name: Build static with netcdf
       run: |
         sudo apt-get install libnetcdff-dev libnetcdf-c++4-dev
+        cargo build --features "build_source netcdf"
         cargo clean
-        cargo build --workspace --features "build_source netcdf"
     - name: Build default and test
       run: |
-        cargo clean
-        cargo build --workspace --features "tests"
-        cargo test
-        
+        cargo build --features "tests"
+        cargo test       
