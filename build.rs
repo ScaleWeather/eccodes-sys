@@ -127,33 +127,28 @@ async fn get_include_from_source() -> PathBuf {
     //build source with cmake
     let mut cmake_config = cmake::Config::new(source_path);
 
-    //default configuration
+    //cmake build configuration
     cmake_config.define("CMAKE_C_FLAGS", "-O3");
-    cmake_config.define("ENABLE_NETCDF", "OFF");
     cmake_config.define("ENABLE_FORTRAN", "OFF");
-    cmake_config.define("ENABLE_JPG", "OFF");
-    cmake_config.define("ENABLE_PNG", "OFF");
-    cmake_config.define("ENABLE_MEMFS", "ON");
-    cmake_config.define("BUILD_SHARED_LIBS", "OFF");
+    cmake_config.define("ENABLE_EXAMPLES", "OFF");
+    cmake_config.define("ENABLE_TESTS", "OFF");
+    cmake_config.define("ENABLE_BUILD_TOOLS", "OFF");
 
-    if cfg!(feature = "shared") {
-        cmake_config.define("BUILD_SHARED_LIBS", "ON");
-    }
+    let shared = cfg!(feature = "shared");
+    let no_memfs = cfg!(feature = "no_memfs");
+    let netcdf = cfg!(feature = "netcdf");
+    let jpeg = cfg!(feature = "jpeg");
+    let png = cfg!(feature = "png");
+    let posix = cfg!(feature = "posix");
+    let aec = cfg!(feature = "aec");
 
-    if cfg!(feature = "no_memfs") {
-        cmake_config.define("ENABLE_MEMFS", "OFF");
-    }
-
-    if cfg!(feature = "netcdf") {
-        cmake_config.define("ENABLE_NETCDF", "ON");
-    }
-
-    if cfg!(feature = "jpeg") {
-        cmake_config.define("ENABLE_JPG", "ON");
-    }
-    if cfg!(feature = "png") {
-        cmake_config.define("ENABLE_PNG", "ON");
-    }
+    cmake_config.define("BUILD_SHARED_LIBS", if shared { "ON" } else { "OFF" });
+    cmake_config.define("ENABLE_MEMFS", if no_memfs { "OFF" } else { "ON" });
+    cmake_config.define("ENABLE_NETCDF", if netcdf { "ON" } else { "OFF" });
+    cmake_config.define("ENABLE_JPG", if jpeg { "ON" } else { "OFF" });
+    cmake_config.define("ENABLE_PNG", if png { "ON" } else { "OFF" });
+    cmake_config.define("ENABLE_ECCODES_THREADS", if posix { "ON" } else { "OFF" });
+    cmake_config.define("ENABLE_AEC", if aec { "ON" } else { "OFF" });
 
     //path to built libeccodes
     let eccodes = cmake_config.build();

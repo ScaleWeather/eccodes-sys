@@ -2,7 +2,7 @@
 name = "eccodes-sys"
 description = "Low-level Rust bindings for latests ecCodes version."
 repository = "https://github.com/ScaleWeather/eccodes-sys"
-version = "0.0.2"
+version = "0.1.0"
 readme = "README.md"
 authors = ["Jakub Lewandowski <scaleweather@gmail.com>"]
 keywords = ["eccodes", "grib", "bufr", "meteorology", "weather"]
@@ -23,6 +23,8 @@ no_memfs = ["build_source"]
 jpeg = ["build_source"] #requires libopenjp2-7-dev
 png = ["build_source"] #requires libpng-dev
 netcdf = ["build_source"] #requires libnetcdff-dev libnetcdf-c++4-dev
+posix = ["build_source"]
+aec = ["build_source"] #requires libaec-dev
 
 [build-dependencies]
 bindgen = "0.58.1"

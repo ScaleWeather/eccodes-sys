@@ -23,7 +23,9 @@
 //!
 //!- `jpeg` - builds ecCodes with JPEG2000 support enabled (`ENABLE_JPG=ON`), requires `libopenjp2-7-dev`
 //!- `png` - builds ecCodes with PNG support enabled (`ENABLE_PNG=ON`), requires `libpng-dev`
-//!- `netcdf` - builds ecCodes with NETCDF support enabled (`ENABLE_NETCDF=ON`), requires `libnetcdff-dev` and `libnetcdf-c++4-dev`
+//!- `netcdf` - builds ecCodes with NetCDF support enabled (`ENABLE_NETCDF=ON`), requires `libnetcdff-dev` and `libnetcdf-c++4-dev`
+//!- `aec` - builds ecCodes with Adaptive Entropy Coding for decoding/encoding (CCSDS) enabled (`ENABLE_AEC=ON`), requires `libaec-dev`
+//!- `netcdf` - builds ecCodes with POSIX threads support enabled (`ENABLE_ECCODES_THREADS=ON`)
 //!
 //!These are advanced features which should be used only when you know that compilation files will not be removed:
 //!

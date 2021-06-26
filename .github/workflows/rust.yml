@@ -60,6 +60,15 @@ jobs:
         sudo apt-get install libnetcdff-dev libnetcdf-c++4-dev
         cargo build --features "build_source netcdf"
         cargo clean
+    - name: Build static with posix threads
+      run: |
+        cargo build --features "build_source posix"
+        cargo clean
+    - name: Build static with aec
+      run: |
+        sudo apt-get install libaec-dev
+        cargo build --features "build_source aec"
+        cargo clean
     - name: Build default and test
       run: |
         cargo build --features "tests"
