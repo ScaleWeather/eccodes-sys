@@ -1,6 +1,7 @@
 # eccodes-sys
 
 ![Licence](https://img.shields.io/github/license/ScaleWeather/eccodes-sys?style=flat-square)
+![Crates.io](https://img.shields.io/crates/v/eccodes-sys?style=flat-square)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ScaleWeather/eccodes-sys/cargo?label=cargo%20build&style=flat-square)
 
 **This is a `-sys` crate with raw, unsafe bindings to the library and its API should not be used directly.** See the [eccodes crate](https://github.com/ScaleWeather/eccodes) for high-level, safe bindings.
