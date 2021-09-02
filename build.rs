@@ -100,9 +100,9 @@ async fn get_include_from_source() -> PathBuf {
     //path constants
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     let source_url =
-        "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz";
-    let source_tar = out_path.join("eccodes-2.22.1-Source.tar.gz");
-    let source_path = out_path.join("eccodes-2.22.1-Source");
+        "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.23.0-Source.tar.gz";
+    let source_tar = out_path.join("eccodes-2.23.0-Source.tar.gz");
+    let source_path = out_path.join("eccodes-2.23.0-Source");
 
     //download the source code
     let source_content = reqwest::get(source_url)

@@ -1,8 +1,9 @@
 # eccodes-sys
 
-[![License](https://img.shields.io/github/license/ScaleWeather/eccodes-sys?style=flat-square)](https://choosealicense.com/licenses/apache-2.0/)
-[![Crates.io](https://img.shields.io/crates/v/eccodes-sys?style=flat-square)](https://crates.io/crates/eccodes-sys)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ScaleWeather/eccodes-sys/cargo?label=cargo%20build&style=flat-square)](https://github.com/ScaleWeather/eccodes-sys/actions)
+[![License](https://img.shields.io/github/license/ScaleWeather/eccodes-sys)](https://choosealicense.com/licenses/apache-2.0/)
+[![Crates.io](https://img.shields.io/crates/v/eccodes-sys)](https://crates.io/crates/eccodes-sys)
+[![dependency status](https://deps.rs/repo/github/ScaleWeather/eccodes-sys/status.svg)](https://deps.rs/repo/github/ScaleWeather/eccodes-sys)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ScaleWeather/eccodes-sys/cargo?label=cargo%20build)](https://github.com/ScaleWeather/eccodes-sys/actions)
 
 **This is a `-sys` crate with raw, unsafe bindings to the library and its API should not be used directly.** See the [eccodes crate](https://github.com/ScaleWeather/eccodes) for high-level, safe bindings.
 

@@ -27,13 +27,13 @@ posix = ["build_source"]
 aec = ["build_source"] #requires libaec-dev
 
 [build-dependencies]
-bindgen = "0.58.1"
+bindgen = "0.59.1"
 pkg-config = "0.3.19"
 cmake = "0.1.45"
-flate2 = "1.0.20"
-tar = "0.4.35"
+flate2 = "1.0.21"
+tar = "0.4.37"
 reqwest = { version="0.11.4", features=["rustls-tls"] }
-tokio = { version="1.7.1", features=["macros", "rt"] }
+tokio = { version="1.11.0", features=["macros", "rt"] }
 
 [package.metadata.docs.rs]
 features = ["docs"]
