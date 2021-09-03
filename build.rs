@@ -43,7 +43,7 @@ impl ParseCallbacks for MacroCallback {
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
-    if cfg!(feature="docs") {
+    if cfg!(feature = "docs") {
         return;
     }
 
@@ -154,10 +154,18 @@ async fn get_include_from_source() -> PathBuf {
     let eccodes = cmake_config.build();
 
     //link the library
-    if cfg!(feature = "shared") {
+    if shared {
         println!("cargo:rustc-link-lib=eccodes");
     } else {
         println!("cargo:rustc-link-lib=static=eccodes");
+    }
+
+    if !no_memfs {
+        if cfg!(feature = "shared") {
+            println!("cargo:rustc-link-lib=eccodes_memfs");
+        } else {
+            println!("cargo:rustc-link-lib=static=eccodes_memfs");
+        }
     }
 
     println!(
