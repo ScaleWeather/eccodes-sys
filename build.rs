@@ -1,7 +1,7 @@
 use std::{
     collections::HashSet,
     env,
-    fs::File,
+    fs::{self, File},
     io::copy,
     path::PathBuf,
     sync::{Arc, RwLock},
@@ -114,18 +114,18 @@ async fn get_include_from_source() -> PathBuf {
 
     //save the source code
     let mut dest = File::create(&source_tar).expect("Failed to create file");
-    copy(&mut source_content.as_ref(), &mut dest).expect("Failed to save donwloaded tar");
+    copy(&mut source_content.as_ref(), &mut dest).expect("Failed to save downloaded tar");
 
     //unpack archive
     let tar_gz = File::open(&source_tar).expect("Failed to open ecCodes source archive");
     let tar = GzDecoder::new(tar_gz);
     let mut archive = Archive::new(tar);
     archive
-        .unpack(out_path)
+        .unpack(&out_path)
         .expect("Failed to unpack ecCodes source archive");
 
     //build source with cmake
-    let mut cmake_config = cmake::Config::new(source_path);
+    let mut cmake_config = cmake::Config::new(&source_path);
 
     //cmake build configuration
     cmake_config.define("CMAKE_C_FLAGS", "-O3");
@@ -150,7 +150,7 @@ async fn get_include_from_source() -> PathBuf {
     cmake_config.define("ENABLE_ECCODES_THREADS", if posix { "ON" } else { "OFF" });
     cmake_config.define("ENABLE_AEC", if aec { "ON" } else { "OFF" });
 
-    //path to built libeccodes
+    //path to installed libeccodes, effectively out directory
     let eccodes = cmake_config.build();
 
     //link the library
@@ -172,6 +172,11 @@ async fn get_include_from_source() -> PathBuf {
         "cargo:rustc-link-search=native={}",
         eccodes.join("lib").display()
     );
+
+    //cleanup the out directory
+    fs::remove_file(&source_tar).expect("failed to remove source archive");
+    fs::remove_dir_all(&source_path).expect("failed to remove source directory");
+    fs::remove_dir_all(&out_path.join("build")).expect("failed to remove build directory");
 
     eccodes.join("include")
 }
