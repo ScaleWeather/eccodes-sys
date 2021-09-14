@@ -10,7 +10,8 @@ use bindgen::callbacks::{MacroParsingBehavior, ParseCallbacks};
 // build script heavily inspired by proj-sys crate
 // some parts of code from rust-bindgen
 
-const MINIMUM_ECCODES_VERSION: &str = "2.20.0"; // currently the latest in apt-get
+// currently the latest in apt on Github Actions
+const MINIMUM_ECCODES_VERSION: &str = "2.16.0";
 const PROBLEMATIC_MACROS: [&str; 5] = [
     "FP_NAN",
     "FP_INFINITE",
