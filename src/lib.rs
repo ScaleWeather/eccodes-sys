@@ -5,37 +5,47 @@
 
 //!# Low-level Rust bindings for ecCodes
 //!
-//!**This is a `-sys` crate with raw, unsafe bindings to the library and its API should not be used directly.** See the [eccodes crate](https://github.com/ScaleWeather/eccodes) for high-level, safe bindings.
+//!**This is a `-sys` crate with raw, unsafe bindings to the library and its API should not be used directly.** 
+//!See the [eccodes crate](https://github.com/ScaleWeather/eccodes) for high-level, safe bindings.
 //!
-//![ecCodes](https://confluence.ecmwf.int/display/ECC/ecCodes+Home) is an open-source library for reading and writing GRIB and BUFR files developed by [European Centre for Medium-Range Weather Forecasts](https://www.ecmwf.int/).
+//!**Due to the complexity of ecCodes library the decision has been made that this crate will not build ecCodes from source.**
+//!See sections below for additional information how to install ecCodes on your system.
+//!
+//![ecCodes](https://confluence.ecmwf.int/display/ECC/ecCodes+Home) is an open-source library for 
+//!reading and writing GRIB and BUFR files developed by [European Centre for Medium-Range Weather Forecasts](https://www.ecmwf.int/).
 //!
 //!## Usage
 //!
-//!By default this crate will look for existing `libeccodes` installation using [pkg-config](https://crates.io/crates/pkg-config). If the library is not found, the crate will attempt to download the latest source code and build ecCodes from source. The ecCodes library is then linked and bindings are generated using [bindgen](https://crates.io/crates/bindgen).
+//!This crate will look for existing `libeccodes` installation using [pkg-config](https://crates.io/crates/pkg-config).
+//!The ecCodes library is then linked and bindings are generated using [bindgen](https://crates.io/crates/bindgen). 
+//!If the library is not found, the build will fail. 
 //!
-//!### Features
+//!## ecCodes installation
 //!
-//!The `eccodes-sys` crate allows to choose several features. For a detailed explanation of ecCodes compilation options check the [official website](https://confluence.ecmwf.int/display/ECC/ecCodes+installation).
+//!The reccomended way to install ecCodes on your computer is using your package manager.
+//!For example, on Ubuntu you can use `apt-get`:
 //!
-//!- `build_source` - ecCodes library will be built from source even if other installation exists. This option by default builds static library with [MEMFS](https://confluence.ecmwf.int/pages/viewpage.action?pageId=143037711) activated.
+//!```text
+//!$ sudo apt-get install libeccodes-dev
+//!```
 //!
-//!All following features activate building from source:
+//!Alternatively, you can install the library manually from source in suitable directory
+//!following [this instructions](https://confluence.ecmwf.int/display/ECC/ecCodes+installation).
 //!
-//!- `jpeg` - builds ecCodes with JPEG2000 support enabled (`ENABLE_JPG=ON`), requires `libopenjp2-7-dev`
-//!- `png` - builds ecCodes with PNG support enabled (`ENABLE_PNG=ON`), requires `libpng-dev`
-//!- `netcdf` - builds ecCodes with NetCDF support enabled (`ENABLE_NETCDF=ON`), requires `libnetcdff-dev` and `libnetcdf-c++4-dev`
-//!- `aec` - builds ecCodes with Adaptive Entropy Coding for decoding/encoding (CCSDS) enabled (`ENABLE_AEC=ON`), requires `libaec-dev`
-//!- `posix` - builds ecCodes with POSIX threads support enabled (`ENABLE_ECCODES_THREADS=ON`)
+//!Then add the `lib/pkgconfig` directory from your ecCodes installation directory
+//!to the `PKG_CONFIG_PATH` environmental variable. For example:
 //!
-//!These are advanced features which should be used only when you know that compilation files will not be removed:
+//!```text
+//!$ export PKG_CONFIG_PATH=<your_eccodes_path>/lib/pkgconfig
+//!```
 //!
-//!- `shared` - builds ecCodes as shared library (`BUILD_SHARED_LIBS=ON`)
-//!- `no_memfs` - builds ecCodes with MEMFS deactivated (`ENABLE_MEMFS=OFF`)
+//!## Features
 //!
-//!There are also development features available:
+//!There are two development features available:
 //!
-//!- `docs` - for documentation building, does not build or link ecCodes and includes `bindings-docs.rs` into `lib.rs`
+//!- `docs` - for documentation building, does not link ecCodes and includes `bindings-docs.rs` into `lib.rs`
 //!- `tests` - turns on generation of layout tests by `bindgen`, should not be used in production. Layout tests are off by default as they derefrence null pointers causing undefined behaviour
+//!
 
 #[cfg(not(feature = "docs"))]
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
