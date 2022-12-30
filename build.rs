@@ -11,7 +11,7 @@ use bindgen::callbacks::{MacroParsingBehavior, ParseCallbacks};
 // some parts of code from rust-bindgen
 
 // currently the latest in apt on Github Actions
-const MINIMUM_ECCODES_VERSION: &str = "2.16.0";
+const MINIMUM_ECCODES_VERSION: &str = "2.24.0";
 const PROBLEMATIC_MACROS: [&str; 5] = [
     "FP_NAN",
     "FP_INFINITE",
