@@ -2,24 +2,28 @@
 name = "eccodes-sys"
 description = "Low-level Rust bindings for latests ecCodes version."
 repository = "https://github.com/ScaleWeather/eccodes-sys"
-version = "0.3.1"
+version = "0.3.2"
 readme = "README.md"
 authors = ["Jakub Lewandowski <scaleweather@gmail.com>"]
 keywords = ["eccodes", "grib", "bufr", "meteorology", "weather"]
-categories = ["api-bindings", "external-ffi-bindings", "mathematics", "encoding", "science"]
+categories = [
+    "api-bindings",
+    "external-ffi-bindings",
+    "mathematics",
+    "encoding",
+    "science",
+]
 license = "Apache-2.0"
 edition = "2021"
 links = "eccodes"
-exclude = [
-    ".github/*",
-]
+exclude = [".github/*"]
 
 [features]
 tests = []
 docs = []
 
 [build-dependencies]
-bindgen = "^0.59.1"
+bindgen = "^0.63.0"
 pkg-config = "^0.3.22"
 
 [package.metadata.docs.rs]
