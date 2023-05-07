@@ -40,14 +40,12 @@ impl ParseCallbacks for MacroCallback {
 fn main() {
     if cfg!(feature = "docs") {
         return;
-    }
-
-    let include_path;
+    };
     let lib_result = pkg_config::Config::new()
         .atleast_version(MINIMUM_ECCODES_VERSION)
         .probe("eccodes");
 
-    match lib_result {
+    let include_path = match lib_result {
         Ok(pk) => {
             eprintln!(
                 "Found installed ecCodes library to link at: {:?}",
@@ -55,7 +53,7 @@ fn main() {
             );
             println!("cargo:rustc-link-search={:?}", pk.link_paths[0]);
             println!("cargo:rustc-link-lib=eccodes");
-            include_path = pk.include_paths[0].clone();
+            pk.include_paths[0].clone()
         }
         Err(err) => {
             panic!(
@@ -65,7 +63,7 @@ fn main() {
                 err
             );
         }
-    }
+    };
 
     //bindgen magic to avoid duplicate math.h type definitions
     let macros = Arc::new(RwLock::new(HashSet::new()));
@@ -77,9 +75,7 @@ fn main() {
         .trust_clang_mangling(false)
         .header("wrapper.h")
         .layout_tests(tests) //avoiding tests with UB
-        .parse_callbacks(Box::new(MacroCallback {
-            macros: macros.clone(),
-        }))
+        .parse_callbacks(Box::new(MacroCallback { macros }))
         .generate()
         .expect("Unable to generate bindings");
 
