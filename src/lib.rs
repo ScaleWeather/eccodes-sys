@@ -47,6 +47,12 @@
 //!- `tests` - turns on generation of layout tests by `bindgen`, should not be used in production. Layout tests are off by default as they derefrence null pointers causing undefined behaviour
 //!
 
+use std::sync::Mutex;
+
+/// Global mutex to synchronize functions that fail in concurrent context,
+/// eg. `codes_handle_new_from_file`, `codes_index_add_file` etc.
+pub static CODES_LOCK: Mutex<()> = Mutex::new(());
+
 #[cfg(not(feature = "docs"))]
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
