@@ -5,6 +5,8 @@
 
 //!# Low-level Rust bindings for ecCodes
 //!
+//!Bindings for this documentation have been generated on Ubuntu 24.04 with `libeccodes` 2.34.1
+//! 
 //!**This is a `-sys` crate with raw, unsafe bindings to the library and its API should not be used directly.** 
 //!See the [eccodes crate](https://github.com/ScaleWeather/eccodes) for high-level, safe bindings.
 //!
@@ -13,7 +15,7 @@
 //!
 //![ecCodes](https://confluence.ecmwf.int/display/ECC/ecCodes+Home) is an open-source library for 
 //!reading and writing GRIB and BUFR files developed by [European Centre for Medium-Range Weather Forecasts](https://www.ecmwf.int/).
-//!
+//! 
 //!## Usage
 //!
 //!This crate will look for existing `libeccodes` installation using [pkg-config](https://crates.io/crates/pkg-config).
@@ -33,11 +35,15 @@
 //!following [this instructions](https://confluence.ecmwf.int/display/ECC/ecCodes+installation).
 //!
 //!Then add the `lib/pkgconfig` directory from your ecCodes installation directory
-//!to the `PKG_CONFIG_PATH` environmental variable. For example:
+//!to the `PKG_CONFIG_PATH` environmental variable. If ecCodes have been compiled
+//!as shared library you will also need to specify `LD_LIBRARY_PATH`.
+//!For example:
 //!
 //!```text
-//!$ export PKG_CONFIG_PATH=<your_eccodes_path>/lib/pkgconfig
+//!export PKG_CONFIG_PATH=<your_eccodes_path>/lib/pkgconfig
+//!export LD_LIBRARY_PATH=<your_eccodes_path>/lib
 //!```
+//!
 //!
 //!## Features
 //!
